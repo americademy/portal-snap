@@ -39,7 +39,6 @@ var kiosk_settings = {
   "rotaterate": "",
 }
 EOL
-fi
 
 # Chromium bringup
 "$SNAP/usr/lib/chromium-browser/chromium-browser" \
