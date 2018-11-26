@@ -1,5 +1,7 @@
 name: codeverse-portal
-version: 0.2.1
+version: 0.2.2
+architectures:
+  - build-on: amd64
 summary: Chromium web browser in Kiosk mode on Mir
 description: |
  An open-source browser project that aims to build a safer, faster, and more
@@ -45,7 +47,6 @@ apps:
 plugs:
   browser-sandbox:
     interface: browser-support
-    allow-sandbox: true
 
   x11-plug: # because cannot have identical plug/slot name in same yaml.
     interface: x11
