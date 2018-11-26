@@ -1,0 +1,8 @@
+parts
+prime
+snap/.snapcraft
+stage
+codeverse-portal*.snap
+codeverse-portal*tar.bz2
+*.sublime-project
+*.sublime-workspace
