@@ -1,65 +1,36 @@
 #!/bin/bash
-url="$(snapctl get url)"
 
-# Configure Chromium to load kiosk extension
-# "load-and-launch-app" loads app extension source from a directory, and launches
-# "silent-launch" prevents normal Chromium window opening first
-EXTRA_ARGS="--load-and-launch-app=/tmp/kiosk-app --silent-launch"
+# if any command errors, then exit this script
+set -e
 
-# Prepare extension - copy from read-only filesystem, and generate settings.js
-cp -R $SNAP/etc/chromium-browser/kiosk-app /tmp
-cat >/tmp/kiosk-app/js/settings.js <<EOL
-var kiosk_settings = {
-  "url": "${url}",
-  "reset": 0,
-  "allowprint": false,
-  "shownav": false,
-  "local": false,
-  "remote": false,
-  "username": "",
-  "password": "",
-  "restart": false,
-  "remoteschedule": false,
-  "hidegslidescontrols": true,
-  "hidecursor": false,
-  "disablecontextmenu": true,
-  "disabledrag": true,
-  "disabletouchhighlight": true,
-  "disableselection": true,
-  "resetcache": false,
-  "partition": false,
-  "allownewwindow": false,
-  "screensavertime": 0,
-  "screensaverURL": "",
-  "clearcookiesreset": true,
-  "whitelist": "",
-  "useragent": "",
-  "authorization": "",
-  "multipleurlmode": "",
-  "rotaterate": "",
-}
-EOL
+# the URL we are navigating to
+URL="$(snapctl get url)"
 
-# Chromium bringup
+# remove the user data folder (if it exists)
+rm -rf $SNAP_USER_DATA/.config/chromium/Singleton* || true
+
+# launch the browser
 "$SNAP/usr/lib/chromium-browser/chromium-browser" \
-        --no-default-browser-check \
-        --no-first-run \
-        --noerrdialogs \
-        --disable-restore-session-state \
-        --disable-infobars \
-        --disable-java \
-        --disable-translate \
-        --disable-suggestions-service \
-        --disable-save-password-bubble \
-        --autoplay-policy=no-user-gesture-required \
-        --no-sandbox \
-        --disable-gpu-sandbox \
-        --dbus-stub \
-        --enable-logging=stderr \
-        --password-store=basic \
-        --ignore-gpu-blacklist --enable-native-gpu-memory-buffers \
-        --class=chromium \
-        --profile-directory=Default $EXTRA_ARGS
-        # Cannot run as root and be sandboxed at the same time, but then need
-        # to hide the "warning sandboxing disabled" banner
-        # kiosk-printing disables printing entirely
+  --no-default-browser-check \
+  --no-first-run \
+  --noerrdialogs \
+  --disable-restore-session-state \
+  --disable-infobars \
+  --disable-java \
+  --disable-translate \
+  --disable-suggestions-service \
+  --disable-save-password-bubble \
+  --autoplay-policy=no-user-gesture-required \
+  --no-sandbox \
+  --disable-gpu-sandbox \
+  --dbus-stub \
+  --enable-logging=stderr \
+  --password-store=basic \
+  --ignore-gpu-blacklist \
+  --enable-native-gpu-memory-buffers \
+  --class=chromium \
+  --profile-directory=Default \
+  --load-and-launch-app=/tmp/kiosk-app \
+  --silent-launch \
+  --kiosk \
+  $URL
