@@ -30,7 +30,5 @@ rm -rf $SNAP_USER_DATA/.config/chromium/Singleton* || true
   --enable-native-gpu-memory-buffers \
   --class=chromium \
   --profile-directory=Default \
-  --load-and-launch-app=/tmp/kiosk-app \
-  --silent-launch \
   --kiosk \
   $URL
