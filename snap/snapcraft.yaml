@@ -18,7 +18,7 @@ apps:
 
   chromium-mir-kiosk:
     command: desktop-launch xwayland-kiosk-launch chromium-browser.launcher
-    # daemon: simple
+    daemon: simple
     desktop: usr/share/applications/chromium-browser.desktop
     environment:
       CHROME_DESKTOP: chromium-browser.desktop
