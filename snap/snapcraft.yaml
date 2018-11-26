@@ -1,5 +1,5 @@
 name: codeverse-portal
-version: 0.2.9
+version: 0.2.91
 architectures:
   - build-on: amd64
 summary: Chromium web browser in Kiosk mode on Mir
@@ -12,7 +12,7 @@ grade: devel
 apps:
   web-api:
     command: webserver www
-    # daemon: simple
+    daemon: simple
     restart-condition: always
     plugs:
       - network-bind
@@ -38,11 +38,7 @@ apps:
       - removable-media
       - screen-inhibit-control
       - wayland
-      - x11-plug
-
-plugs:
-  x11-plug: # because cannot have identical plug/slot name in same yaml.
-    interface: x11
+      - x11
 
 parts:
   kiosk-extension:
