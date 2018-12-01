@@ -1,5 +1,5 @@
 name: codeverse-portal
-version: 0.3.1
+version: 0.3.2
 architectures:
   - build-on: amd64
 summary: Codeverse Display App
@@ -24,6 +24,7 @@ apps:
       CHROME_DESKTOP: chromium-browser.desktop
       XWAYLAND_I3_CONFIG_FILE: $SNAP/etc/i3.config
     plugs:
+      - browser-support
       - browser-sandbox
       - desktop
       - hardware-observe
@@ -40,10 +41,6 @@ apps:
       - x11
 
 plugs:
-  browser-sandbox:
-    interface: browser-support
-    allow-sandbox: true
-
   x11-plug: # because cannot have identical plug/slot name in same yaml.
     interface: x11
 
