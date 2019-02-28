@@ -1,0 +1,45 @@
+layouts:
+
+  # 1080p
+  default:
+    cards:
+    - card-id: 0
+      HDMI-A-1:
+        mode: 1920x1080@30.0
+      DisplayPort-1:
+        mode: 1920x1080@30.0
+      HDMI-A-2:
+        mode: 1920x1080@30.0
+
+  # 4k tvs are 3840 x 2160 pixels
+  4k:
+    cards:
+    - card-id: 0
+      HDMI-A-1:
+        mode: 1920x1080@30.0
+      DisplayPort-1:
+        mode: 1920x1080@30.0
+      HDMI-A-2:
+        mode: 1920x1080@30.0
+
+  # 1080 TV's are 1080 x 1920 pixels
+  1080p:
+    cards:
+    - card-id: 0
+      HDMI-A-1:
+        mode: 1920x1080@30.0
+      DisplayPort-1:
+        mode: 1920x1080@30.0
+      HDMI-A-2:
+        mode: 1920x1080@30.0
+
+  # 720 TV's are 1280 x 720 pixels
+  720p:
+    cards:
+    - card-id: 0
+      HDMI-A-1:
+        mode: 1280x720@30.0
+      DisplayPort-1:
+        mode: 1280x720@30.0
+      HDMI-A-2:
+        mode: 1280x720@30.0

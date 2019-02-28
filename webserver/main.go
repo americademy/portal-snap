@@ -18,6 +18,7 @@ func navigateTo(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(err2.Error()))
   }
 
+  enableCors(&w)
   w.Write([]byte("OK" + string(output1) + string(output2)))
 }
 
@@ -27,4 +28,8 @@ func main() {
   if err := http.ListenAndServe(":8080", nil); err != nil {
     panic(err)
   }
+}
+
+func enableCors(w *http.ResponseWriter) {
+  (*w).Header().Set("Access-Control-Allow-Origin", "*")
 }

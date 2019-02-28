@@ -1,5 +1,5 @@
 name: codeverse-portal
-version: 0.3.2
+version: 0.3.3
 architectures:
   - build-on: amd64
 summary: Codeverse Display App
@@ -18,6 +18,7 @@ apps:
 
   chromium-mir-kiosk:
     command: desktop-launch xwayland-kiosk-launch chromium-browser.launcher
+    restart-condition: always
     daemon: simple
     desktop: usr/share/applications/chromium-browser.desktop
     environment:
@@ -25,7 +26,6 @@ apps:
       XWAYLAND_I3_CONFIG_FILE: $SNAP/etc/i3.config
     plugs:
       - browser-support
-      - browser-sandbox
       - desktop
       - hardware-observe
       - home
