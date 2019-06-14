@@ -16,35 +16,36 @@ layouts:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1920x1080@30.0
+        mode: 3840x2160@30.0
       DisplayPort-1:
-        mode: 1920x1080@30.0
+        mode: 3840x2160@30.0
       HDMI-A-2:
-        mode: 1920x1080@30.0
+        mode: 3840x2160@30.0
 
   4k-left:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: left
       DisplayPort-1:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: left
       HDMI-A-2:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: left
+        
   4k-right:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: right
       DisplayPort-1:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: right
       HDMI-A-2:
-        mode: 1920x1080@30.0
+        mode: 2160x3840@30.0
         orientation: right
 
   # 1080 TV's are 1080 x 1920 pixels
@@ -62,26 +63,26 @@ layouts:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: left
       DisplayPort-1:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: left
       HDMI-A-2:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: left
         
   1080p-right:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: right
       DisplayPort-1:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: right
       HDMI-A-2:
-        mode: 1920x1080@30.0
+        mode: 1080x1920@30.0
         orientation: right
 
   # 720 TV's are 1280 x 720 pixels
@@ -99,24 +100,24 @@ layouts:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: left
       DisplayPort-1:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: left
       HDMI-A-2:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: left
 
 720p-right:
     cards:
     - card-id: 0
       HDMI-A-1:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: right
       DisplayPort-1:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: right
       HDMI-A-2:
-        mode: 1280x720@30.0
+        mode: 720x1280@30.0
         orientation: right
