@@ -1,5 +1,5 @@
 #!/bin/sh
 while true; do
-
-    sleep 1m
+    /snap/bin/codeverse-portal.chromium-mir-kiosk || true
+    sleep 5
 done
