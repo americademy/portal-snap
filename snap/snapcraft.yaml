@@ -37,7 +37,7 @@ apps:
       - x11-plug
     slots:
       - x11
-      
+
   watcher:
     command: watcher.sh
     daemon: simple
@@ -71,6 +71,7 @@ parts:
     go-importpath: github.com/americademy/portal-snap
 
   watcher:
+    source: parts
     plugin: copy
     files:
       watcher.sh: bin/
