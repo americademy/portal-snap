@@ -71,7 +71,7 @@ parts:
     go-importpath: github.com/americademy/portal-snap
 
   watcher:
-    source: parts
+    source: .
     plugin: copy
     files:
       watcher.sh: bin/
