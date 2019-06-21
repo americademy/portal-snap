@@ -38,6 +38,10 @@ apps:
     slots:
       - x11
 
+  watcher:
+    command: watcher.sh
+    daemon: simple
+
 plugs:
   x11-plug: # because cannot have identical plug/slot name in same yaml.
     interface: x11
@@ -65,4 +69,10 @@ parts:
     source: .
     plugin: go
     go-importpath: github.com/americademy/portal-snap
+
+  watcher:
+    source: .
+    plugin: copy
+    files:
+      watcher.sh: bin/
 
