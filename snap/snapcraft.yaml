@@ -40,10 +40,6 @@ apps:
     slots:
       - x11
 
-  watcher:
-    command: watcher.sh
-    daemon: simple
-
 plugs:
   x11-plug: # because cannot have identical plug/slot name in same yaml.
     interface: x11
