@@ -67,3 +67,4 @@ parts:
     source: .
     plugin: go
     go-importpath: github.com/americademy/portal-snap
+
