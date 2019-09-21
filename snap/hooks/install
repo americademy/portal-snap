@@ -1,4 +1,8 @@
 #!/bin/sh -e
 
 # Initialize the URL to a default
-snapctl set url="https://www.codeverse.com/"
+snapctl set \
+  url="https://www.codeverse.com/" \
+  devmode="false" \
+  debug="false" \
+  error-to-console="false"

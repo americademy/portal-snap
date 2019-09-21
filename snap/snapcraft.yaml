@@ -1,3 +1,5 @@
+# inspiration from wpe-webkit-mir-kiosk and chromium-mir-kiosk
+
 name: codeverse-portal
 version: 0.3.3
 architectures:
@@ -10,6 +12,28 @@ confinement: strict
 grade: stable
 base: core18
 
+# TODO: Check if these paths can be made relative with compiler flags
+layout:
+  # Relies on cmake install prefix $SNAP/usr, /libexec is not allowed
+  /usr/libexec/wpe-webkit-1.0:
+    bind: $SNAP/usr/wpe-webkit-1.0
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/wpe-webkit-1.0:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/wpe-webkit-1.0
+  /etc/fonts/conf.avail:
+    bind: $SNAP/etc/fonts/conf.avail
+  /etc/ssl/certs/ca-certificates.crt:
+    bind-file: $SNAP/etc/ssl/certs/ca-certificates.crt
+  /usr/share/fonts:
+    bind: $SNAP/usr/share/fonts
+  /usr/local/share/fonts: # wpe-webkit: Search ALL the fonts!
+    bind: $SNAP/usr/share/fonts
+
+slots:
+  dbus-cogctl:
+    interface: dbus
+    bus: system
+    name: com.igalia.Cog
+
 apps:
   web-api:
     command: webserver www
@@ -18,53 +42,116 @@ apps:
     plugs:
       - network-bind
 
-  chromium-mir-kiosk:
-    command: desktop-launch xwayland-kiosk-launch chromium-browser.launcher
-    desktop: usr/share/applications/chromium-browser.desktop
-    environment:
-      CHROME_DESKTOP: chromium-browser.desktop
-      XWAYLAND_I3_CONFIG_FILE: $SNAP/etc/i3.config
+  browser:
+    command: desktop-launch $SNAP/bin/snapcraft-preload $SNAP/bin/launch-wpe
+    daemon: simple
+    restart-condition: always
+    slots: [dbus-cogctl]
     plugs:
-      - browser-support
-      - desktop
-      - hardware-observe
-      - home
-      - network
-      - network-manager
-      - opengl
-      - password-manager-service
-      - removable-media
-      - screen-inhibit-control
+      # Auto-connected
       - wayland
-      - x11-plug
-    slots:
-      - x11
+      - opengl # required for libEGL to work
+      - network
+      - network-bind # Remote inspector
+      - upower-observe
+      # Manually connected, show up as AppArmor denials but
+      # basic browsing seems to work fine without
+      - avahi-observe # zeroconf name resolution
+      # snappy-debug suggestions
+      - network-manager
+      - hostname-control
+      - process-control
+      # - browser-support # TODO: Use this if/when we can get rid of preload/desktop-launch
 
-plugs:
-  x11-plug: # because cannot have identical plug/slot name in same yaml.
-    interface: x11
+    environment:
+      LIBGL_DRIVERS_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
+      # cf. https://tutorials.ubuntu.com/tutorial/wayland-kiosk#9
+      # Liberally adapted from
+      # https://github.com/MirServer/mir-kiosk-apps/blob/master/snap/snapcraft.yaml
+      # Some might not be needed, but omitting some would either crash
+      # the WPE renderer process or cause AppArmor denials
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+      XKB_CONFIG_ROOT: ${SNAP}/usr/share/X11/xkb
+      XDG_CONFIG_DIRS: ${SNAP}/etc/xdg:$XDG_CONFIG_DIRS
+      XDG_DATA_DIRS: ${SNAP}/usr/share:$XDG_DATA_DIRS
+      XDG_DATA_HOME: ${SNAP}/usr/share
+      XDG_CACHE_HOME: $SNAP_COMMON/cache
+      FONTCONFIG_PATH: ${SNAP}/etc/fonts/conf.d
+      FONTCONFIG_FILE: ${SNAP}/etc/fonts/fonts.conf
 
 parts:
-  kiosk-extension:
-    source: .
-    plugin: nil
-    stage-packages:
-      - chromium-browser
-      - chromium-codecs-ffmpeg-extra
-      - libdb5.3
-
-  launcher:
-    plugin: dump
-    source: glue
-    after:
-      - desktop-gtk3
-      - xwayland-kiosk-helper
-    organize:
-      chromium-browser.launcher: bin/
-      i3.config: etc/
-
   web-api:
     source: .
     plugin: go
     go-importpath: github.com/americademy/portal-snap
 
+  glib-only:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: glib-only
+    plugin: make
+    build-packages:
+      - libglib2.0-dev
+    stage-packages:
+      - libglib2.0-bin
+
+  snapcraft-preload:
+    source: https://github.com/sergiusens/snapcraft-preload.git
+    plugin: cmake
+    build-packages:
+      - on amd64:
+          - gcc-multilib
+          - g++-multilib
+    stage-packages:
+      - libstdc++6
+
+  cog:
+    plugin: cmake
+    source: https://github.com/Igalia/cog.git
+    source-tag: v0.3.1
+    build-snaps: [wpe-webkit-libs]
+    stage-snaps: [wpe-webkit-libs]
+    configflags:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -GNinja
+      - -DCOG_DBUS_SYSTEM_BUS=ON
+      - -DWEB_ENGINE_INCLUDE_DIRS=$SNAPCRAFT_PART_INSTALL/usr/include/wpe-webkit-1.0;$SNAPCRAFT_PART_INSTALL/usr/include/wpe-fdo-1.0;$SNAPCRAFT_PART_INSTALL/usr/include/wpe-1.0
+    build-packages:
+      - ninja-build
+      - libsoup2.4-dev
+      - libxkbcommon-dev
+      - libwayland-dev
+      - libegl1-mesa-dev
+      - wayland-protocols
+      - libwayland-bin
+    stage-packages:
+      # Runtime requirements for cog browser
+      - glib-networking # required for SSL/TLS support
+      - glib-networking-common
+      - glib-networking-services
+      - libgles2
+      - libslang2 # dep for gstreamer ASCII art modules ¯\_(ツ)_/¯
+      - libgpm2 # mouse
+      # TODO: Fix zeroconf/Bonjour name resolution, these don't seem to suffice
+      - libavahi-core7
+      - libavahi-glib1
+      - libavahi-common3
+      - libavahi-client3
+      # FIXME: Really required on Ubuntu Core?
+      - libgl1-mesa-dri
+      - mesa-va-drivers
+      - libgles2-mesa
+      - libglib2.0-bin
+      # - dbus-x11
+    override-prime: |
+      snapcraftctl prime
+      glib-compile-schemas usr/share/glib-2.0/schemas/
+      # see https://stackoverflow.com/questions/28953925/glib-gio-error-no-gsettings-schemas-are-installed-on-the-system
+      # creates ca-certificates.crt on build host and copies to snap prime dir
+      update-ca-certificates
+      cp /etc/ssl/certs/ca-certificates.crt etc/ssl/certs/
+
+  launch-wpe:
+    plugin: dump
+    source: glue/launcher
+    organize:
+      launch-wpe: bin/

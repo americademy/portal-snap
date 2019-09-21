@@ -1,19 +1,25 @@
 #!/bin/bash -e
 
-export LD_LIBRARY_PATH=$SNAP/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-export PATH=$PATH:$SNAP/usr/bin
-
 validate_url() {
-    url=$1
-    regex='^http(s)?://*'
+  url=$1
+  regex='^http(s)?://*'
+  if [[ ! $url =~ $regex ]]; then
+    # Problematic URL, print error and exit
+    echo "Error: URL \"${url}\" needs to start with http:// or https://"
+    exit 1
+  fi
+}
 
-    if [[ ! $url =~ $regex ]]; then
-        # Problematic URL, print error and exit
-        echo "Error: URL \"${url}\" needs to start with http:// or https://"
-        exit 1
-    fi
+validate_boolean() {
+  if [[ ! $1 =~ (true|false) ]]; then
+    echo "Error: \"$2\" accepts only true/false. Got \"$1\""
+    exit 1
+  fi
 }
 
 validate_url $(snapctl get url)
+validate_boolean "$(snapctl get devmode)"
+validate_boolean "$(snapctl get debug)"
+validate_boolean "$(snapctl get error-to-console)"
 
-snapctl restart $SNAP_NAME
+snapctl restart "$SNAP_NAME"
