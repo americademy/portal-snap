@@ -1,13 +1,9 @@
-# inspiration from wpe-webkit-mir-kiosk and chromium-mir-kiosk
-
 name: codeverse-portal
 version: 0.3.3
 architectures:
   - build-on: amd64
-summary: |
-  Codeverse Display App
-description: |
-  A simple remote controllable display app which runs inside the Codeverse Studios
+summary: Codeverse Display App
+description: A simple remote controllable display app which runs inside the Codeverse Studios
 confinement: strict
 grade: stable
 base: core18
