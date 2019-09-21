@@ -19,8 +19,6 @@ apps:
   chromium-mir-kiosk:
     command: desktop-launch xwayland-kiosk-launch chromium-browser.launcher
     desktop: usr/share/applications/chromium-browser.desktop
-    restart-condition: always
-    daemon: simple
     environment:
       CHROME_DESKTOP: chromium-browser.desktop
       XWAYLAND_I3_CONFIG_FILE: $SNAP/etc/i3.config
